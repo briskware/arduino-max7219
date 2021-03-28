@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/arduino-blink.iml" filepath="$PROJECT_DIR$/.idea/arduino-blink.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/arduino-max7219.iml" filepath="$PROJECT_DIR$/.idea/arduino-max7219.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/arduino-max72192.iml" filepath="$PROJECT_DIR$/.idea/arduino-max72192.iml" />
     </modules>
   </component>
 </project>

@@ -16,11 +16,7 @@ void write_data(uint8_t data);
 void setup() {
     pinMode(LED_BUILTIN, OUTPUT);
 
-    pinMode(CS, OUTPUT);
-    pinMode(CLK, OUTPUT);
-    pinMode(DATA, OUTPUT);
-
-    MAX7219_init(CS, CLK, DATA, 0x0a);
+    MAX7219_init(CS, CLK, DATA, 0x02);
     MAX7219_test();
     MAX7219_clear();
 }
@@ -30,24 +26,22 @@ void loop() {
     delay(delay_ms);
     digitalWrite(LED_BUILTIN, LOW);
     delay(delay_ms);
-//    for(uint8_t i = 0; i < 8; ++i) {
-//        MAX7219_write(i, (count + i) & 0x0f);
-//    }
+
     write_address(count);
-    write_data( (uint8_t) (count / 97));
+    write_data( count / 97);
     ++count;
 }
 
 void write_address(uint16_t address) {
     for ( uint8_t i = 4; i < 8; ++i) {
-        MAX7219_write(i, address & 0x0f);
+        MAX7219_write(i, (address & 0x0f) + 0x00);
         address >>= 4;
     }
 }
 
 void write_data(uint8_t data) {
     for ( uint8_t i = 0; i < 2; ++i) {
-        MAX7219_write(i, data & 0x0f);
+        MAX7219_write(i, (data & 0x0f) + 0x00);
         data >>= 4;
     }
 }
