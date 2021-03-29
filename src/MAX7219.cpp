@@ -29,7 +29,7 @@
 /**
  * slow down the serial communications (the module only accepts serial bits at speeds <10MHz)
  */
-#define MAX7219_CLOCK_DELAY_US 0
+#define MAX7219_CLOCK_DELAY_US 20
 
 /**
  * if this is set we are directly driving segments
@@ -43,9 +43,9 @@
 #endif
 
 // private config (state), use _max7219_init() to initialize
-uint8_t _MAX7219_CS = 2;
+uint8_t _MAX7219_CSB = 2;
 uint8_t _MAX7219_CLK = 3;
-uint8_t _MAX7219_DATA = 4;
+uint8_t _MAX7219_DAT = 4;
 
 
 // 7 seg display driver characters, common cathode configuration
@@ -80,7 +80,7 @@ void _max7219_shift_out_msb(uint8_t val) // rising edge of clock grabs the value
         digitalWrite(_MAX7219_CLK, LOW);
         _max7219_clock_delay();
 
-        digitalWrite(_MAX7219_DATA, (val & 0x80) != 0);
+        digitalWrite(_MAX7219_DAT, (val & 0x80) != 0);
         val <<= 1;
 
         digitalWrite(_MAX7219_CLK, HIGH); //shift happens
@@ -89,27 +89,27 @@ void _max7219_shift_out_msb(uint8_t val) // rising edge of clock grabs the value
 }
 
 void MAX7219_send_cmd(uint16_t cmd) {
-    digitalWrite(_MAX7219_CS, LOW);
+    digitalWrite(_MAX7219_CSB, LOW);
     _max7219_clock_delay();
     _max7219_shift_out_msb((cmd >> 8) & 0xFF);
     _max7219_shift_out_msb(cmd & 0xFF);
-    digitalWrite(_MAX7219_CS, HIGH); // on CS rising edge the command is latched
+    digitalWrite(_MAX7219_CSB, HIGH); // on CS rising edge the command is latched
     _max7219_clock_delay();
 }
 
-void MAX7219_init(uint8_t cs_pin, uint8_t clk_pin, uint8_t data_pin, uint8_t intensity) {
-    _MAX7219_CS = cs_pin;
+void MAX7219_init(uint8_t csb_pin, uint8_t clk_pin, uint8_t dat_pin, uint8_t intensity) {
+    _MAX7219_CSB = csb_pin;
     _MAX7219_CLK = clk_pin;
-    _MAX7219_DATA = data_pin;
+    _MAX7219_DAT = dat_pin;
 
     // initialize pins
-    pinMode(_MAX7219_CS, OUTPUT);
+    pinMode(_MAX7219_CSB, OUTPUT);
     pinMode(_MAX7219_CLK, OUTPUT);
-    pinMode(_MAX7219_DATA, OUTPUT);
+    pinMode(_MAX7219_DAT, OUTPUT);
 
     // disable chip
-    digitalWrite(_MAX7219_CS, HIGH);
-    digitalWrite(_MAX7219_DATA, LOW);
+    digitalWrite(_MAX7219_CSB, HIGH);
+    digitalWrite(_MAX7219_DAT, LOW);
     digitalWrite(_MAX7219_CLK, LOW);
 
     // set shutdown mode
@@ -142,10 +142,14 @@ void MAX7219_shutdown() {
 }
 
 void MAX7219_test() {
-    MAX7219_send_cmd(0x0f01); // switch test bit on
-    delay(500);
-    MAX7219_send_cmd(0x0f00); // switch test bit off
-    delay(500);
+    uint8_t d = 20;
+    for(uint8_t i = 0; i < 9; ++i) {
+        MAX7219_send_cmd(0x0f01); // switch test bit on
+        delay(d);
+        MAX7219_send_cmd(0x0f00); // switch test bit off
+        delay(d);
+    }
+    delay(d*20);
 }
 
 void MAX7219_clear() {

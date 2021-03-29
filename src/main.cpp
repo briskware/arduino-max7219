@@ -26,46 +26,42 @@
 
 #include "MAX7219.h"
 
-#define CS    PIND2
+#define CSB   PIND2
 #define CLK   PIND3
-#define DATA  PIND4
+#define DAT  PIND4
 
 int delay_ms = 1; //ms
 
-uint16_t count = 0;
-
-void write_address(uint16_t address);
-void write_data(uint8_t data);
+void write_dword(uint32_t dword);
+void write_word(uint8_t position, uint16_t value);
+void write_byte(uint8_t position, uint8_t value);
 
 void setup() {
-    pinMode(LED_BUILTIN, OUTPUT);
-
-    MAX7219_init(CS, CLK, DATA, 0x02);
+    MAX7219_init(CSB, CLK, DAT, 0x01);
     MAX7219_test();
     MAX7219_clear();
 }
 
 void loop() {
-    digitalWrite(LED_BUILTIN, HIGH);
+    write_dword(millis());
     delay(delay_ms);
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(delay_ms);
-
-    write_address(count);
-    write_data( count / 97);
-    ++count;
 }
 
-void write_address(uint16_t address) {
-    for ( uint8_t i = 4; i < 8; ++i) {
-        MAX7219_write(i, (address & 0x0f) + 0x00);
+void write_dword(uint32_t dword) {
+    write_word( 4, (dword >> 16) & 0xffff);
+    write_word( 0, dword & 0xffff);
+}
+
+void write_word(uint8_t position, uint16_t address) {
+    for ( uint8_t i = 0; i < 4; ++i) {
+        MAX7219_write(position + i, (address & 0x0f) + 0x00);
         address >>= 4;
     }
 }
 
-void write_data(uint8_t data) {
+void write_byte(uint8_t position, uint8_t data) {
     for ( uint8_t i = 0; i < 2; ++i) {
-        MAX7219_write(i, (data & 0x0f) + 0x00);
+        MAX7219_write(position + i, (data & 0x0f) + 0x00);
         data >>= 4;
     }
 }

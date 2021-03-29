@@ -43,12 +43,12 @@ void MAX7219_send_cmd(uint16_t cmd);
  * * set scan limit to all 8 positions
  * * switch on normal operation
  *
- * @param cs CS pin
+ * @param csb_pin CS pin
  * @param clk CLK pin
- * @param data DATA pin
+ * @param dat_pin DATA pin
  * @param intensity 0x00 - 0x0f (bits 3-7 are ignored)
  */
-void MAX7219_init(uint8_t cs, uint8_t clk, uint8_t data, uint8_t intensity = 0xFF);
+void MAX7219_init(uint8_t csb_pin, uint8_t clk, uint8_t dat_pin, uint8_t intensity = 0xFF);
 
 /**
  * Sends the shutdown command to the MAX7219 controller (switches on power safe more and disables display).
