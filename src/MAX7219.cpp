@@ -143,7 +143,7 @@ void MAX7219_shutdown() {
 
 void MAX7219_test() {
     uint8_t d = 20;
-    for(uint8_t i = 0; i < 9; ++i) {
+    for(uint8_t i = 0; i < d; ++i) {
         MAX7219_send_cmd(0x0f01); // switch test bit on
         delay(d);
         MAX7219_send_cmd(0x0f00); // switch test bit off
@@ -163,7 +163,7 @@ void MAX7219_clear(uint8_t position) {
 }
 
 void MAX7219_write(uint8_t position, uint8_t value) {
-    position++;
+    position++; //digit 0 is at address 1
     uint16_t cmd = position > 8 ? position - 8 : position; // wrap around position
 #ifdef MAX7219_DIRECT_DRIVE
     // use segment lookup table and show dot if but 7 is set

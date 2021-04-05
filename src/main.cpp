@@ -33,8 +33,8 @@
 int delay_ms = 1; //ms
 
 void write_dword(uint32_t dword);
-void write_word(uint8_t position, uint16_t value);
-void write_byte(uint8_t position, uint8_t value);
+void write_word(uint8_t position, uint16_t word);
+void write_byte(uint8_t position, uint8_t byte);
 
 void setup() {
     MAX7219_init(CSB, CLK, DAT, 0x01);
@@ -52,16 +52,16 @@ void write_dword(uint32_t dword) {
     write_word( 0, dword & 0xffff);
 }
 
-void write_word(uint8_t position, uint16_t address) {
+void write_word(uint8_t position, uint16_t word) {
     for ( uint8_t i = 0; i < 4; ++i) {
-        MAX7219_write(position + i, (address & 0x0f) + 0x00);
-        address >>= 4;
+        MAX7219_write(position + i, (word & 0x0f) + 0x00);
+        word >>= 4;
     }
 }
 
-void write_byte(uint8_t position, uint8_t data) {
+void write_byte(uint8_t position, uint8_t byte) {
     for ( uint8_t i = 0; i < 2; ++i) {
-        MAX7219_write(position + i, (data & 0x0f) + 0x00);
-        data >>= 4;
+        MAX7219_write(position + i, (byte & 0x0f) + 0x00);
+        byte >>= 4;
     }
 }
